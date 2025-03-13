@@ -1,25 +1,19 @@
 import streamlit as st
-
-def generate_search_links(keywords):
-    search_links = []
-    for keyword in keywords:
-        search_url = f"https://www.google.com/search?q={keyword}"
-        search_links.append(f"[{keyword}]({search_url})")
-    return search_links
+import webbrowser
 
 st.title("Bulk Google Search")
 
-st.write("Enter Keywords (one per line) and click 'Search All'.")
-
-keywords_input = st.text_area("Enter Keywords Here")
+# User input
+keywords = st.text_area("Enter Keywords (one per line) and click 'Search All'.")
 
 if st.button("Search All"):
-    keywords = keywords_input.strip().split("\n")
-    keywords = [k.strip() for k in keywords if k.strip()]
-    
     if keywords:
-        st.success("Here are your search links:")
-        for link in generate_search_links(keywords):
-            st.markdown(link, unsafe_allow_html=True)
+        search_queries = keywords.split("\n")
+        for query in search_queries:
+            query = query.strip()
+            if query:
+                search_url = f"https://www.google.com/search?q={query.replace(' ', '+')}"
+                webbrowser.open_new_tab(search_url)  # Open in new tab
+                st.success(f"Searching: {query}")  # Show confirmation message
     else:
-        st.error("Please enter at least one keyword.")
+        st.warning("Please enter at least one keyword.")
